@@ -1,9 +1,26 @@
 ﻿<Window x:Class="Finite.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="500" Width="800">
-    <StackPanel>
-        <TextBox Name="txtInput"></TextBox>
-        <Button Name="btnTest" Click="btnTest_Click">Test</Button>
-    </StackPanel>
+        Title="FINITE" Height="150" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Column="0" Grid.Row="0">Enter a regular expression:</Label>
+        <Label Grid.Column="0" Grid.Row="1">Select from a list:</Label>
+        <Label Grid.Column="0" Grid.Row="2" Grid.RowSpan="2" VerticalAlignment="Center">Mode:</Label>
+        <TextBox Name="txtInput" Grid.Column="1" Grid.Row="0">ab*</TextBox>
+        <ComboBox Name="comboBoxInput" Grid.Column="1" Grid.Row="1"/>
+        <RadioButton GroupName="mode" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center">Immediate</RadioButton>
+        <RadioButton GroupName="mode" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center">Step-by-step</RadioButton>
+        <Button Name="btnGenerate" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Click="btnGenerate_Click">Generate</Button>
+    </Grid>
 </Window>

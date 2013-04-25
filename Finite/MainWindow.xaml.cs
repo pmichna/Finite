@@ -65,5 +65,24 @@ namespace Finite
             }
             MessageBox.Show(msg);
         }
+
+        private void btnGenerate_Click(object sender, RoutedEventArgs e)
+        {
+            RegularExpression regex = new RegularExpression(txtInput.Text);
+            DFA dfa = DFABuilder.buildDFA(txtInput.Text);
+            string msg = "DFA built! \nInitial state: " + dfa.InitState.Label + "\n\n" +
+                "States:\n";
+            foreach (State s in dfa.States)
+                msg += s.Label + "\n";
+            msg += "\nTransistions:\n";
+            foreach (State s in dfa.States)
+            {
+                foreach (KeyValuePair<char, State> trans in s.transistions)
+                {
+                    msg += "From: " + s.Label + " to: " + trans.Value.Label + " over: " + trans.Key + "\n";
+                }
+            }
+            MessageBox.Show(msg);
+        }
     }
 }
