@@ -18,9 +18,9 @@ namespace Finite
             States.Add(InitState);
         }
 
-        public void addState(RegularExpression re)
+        public void addState(State state)
         {
-            States.Add(new State(re.Value));
+            States.Add(state);
         }
 
         public void addTransition(RegularExpression from, RegularExpression to, char transition)

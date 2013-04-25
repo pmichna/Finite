@@ -47,8 +47,22 @@ namespace Finite
             //    msg += "Union subexpressions: " + r.Value + "___" + s.Value + "\n";
             //}
             //MessageBox.Show(msg);
-            char a = txtChar.Text[0];
-            string msg = DFABuilder.Derive(regex, a).Value;
+            //char a = txtChar.Text[0];
+            //string msg = DFABuilder.Derive(regex, a).Value;
+            //MessageBox.Show(msg);
+            DFA dfa = DFABuilder.buildDFA(txtInput.Text);
+            string msg = "DFA built! \nInitial state: " + dfa.InitState.Label + "\n\n" +
+                "States:\n";
+            foreach (State s in dfa.States)
+                msg += s.Label + "\n";
+            msg += "\nTransistions:\n";
+            foreach (State s in dfa.States)
+            {
+                foreach(KeyValuePair<char, State> trans in s.transistions)
+                {
+                    msg += "From: " + s.Label + " to: " + trans.Value.Label + " over: " + trans.Key + "\n";
+                }
+            }
             MessageBox.Show(msg);
         }
     }

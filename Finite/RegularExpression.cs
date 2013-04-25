@@ -82,6 +82,7 @@ namespace Finite
         {
             get
             {
+                if (Value == EMPTY_SET) return false;
                 if (IsUnion) return false;
                 if (Value.Length == 3)
                 {

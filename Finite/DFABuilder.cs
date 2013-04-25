@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Finite
 {
@@ -90,6 +91,61 @@ namespace Finite
             return null; //indicates error
         }
 
+        public static DFA buildDFA(string re)
+        {
+            DFA dfa = new DFA(new RegularExpression(re));
+            HashSet<char> alphabet = new HashSet<char>();
+            foreach (char c in re)
+            {
+                if (Char.IsLetter(c))
+                    alphabet.Add(c);
+            }
+            var newStates = new HashSet<State>();
+            //init state
+            //foreach (char c in alphabet)
+            //{
+            //    RegularExpression newRegEx = Derive(new RegularExpression(dfa.InitState.Label), c);
+            //    State newState = new State(newRegEx.Value);
+            //    dfa.States.Add(newState);
+            //}
 
+            while (true)
+            {
+                newStates.Clear();
+                foreach (State state in dfa.States)
+                {
+                    foreach (char c in alphabet)
+                    {
+                        RegularExpression newRegEx = Derive(new RegularExpression(state.Label), c);
+                        State newState = new State(newRegEx.Value);
+                        newStates.Add(newState);
+                        state.addTransition(newState, c);
+                    }
+                }
+                int added = 0;
+               
+                MessageBoxButton btnMessageBox = MessageBoxButton.YesNo;
+                MessageBoxImage icnMessageBox = MessageBoxImage.Question;
+                foreach (State state in newStates)
+                {
+                    string sCaption = "Something equivalent to " + state.Label + " ?\n";
+                    string sMessageBoxText = "";
+                    foreach (State s in dfa.States)
+                        sMessageBoxText += s.Label + "\n";
+                    MessageBoxResult rsltMessageBox = MessageBox.Show(sMessageBoxText,
+                        sCaption, btnMessageBox, icnMessageBox);
+                    if (rsltMessageBox == MessageBoxResult.No)
+                    {
+                        State newState = new State(state.Label);
+                        dfa.addState(newState);
+                        //dfa.addTransition(
+                        
+                        added++;
+                    }
+                }
+                if (added == 0) break;
+            }
+            return dfa;
+        }
     }
 }

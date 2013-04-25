@@ -4,7 +4,6 @@
         Title="MainWindow" Height="500" Width="800">
     <StackPanel>
         <TextBox Name="txtInput"></TextBox>
-        <TextBox Name="txtChar"></TextBox>
         <Button Name="btnTest" Click="btnTest_Click">Test</Button>
     </StackPanel>
 </Window>
