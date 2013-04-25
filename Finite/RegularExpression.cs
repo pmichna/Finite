@@ -13,18 +13,18 @@ namespace Finite
         public readonly static string EMPTY_SET = "EMPTY_SET";
 
         public string Value { get; private set; }
-        
+
         public RegularExpression(string str)
         {
             removeObsoleteParentheses(ref str);
             Value = str;
         }
 
-        
 
-        public RegularExpression() : this(EMPTY_WORD) {}
 
-        public RegularExpression(char c) : this(c.ToString()) {}
+        public RegularExpression() : this(EMPTY_WORD) { }
+
+        public RegularExpression(char c) : this(c.ToString()) { }
 
         public bool IsEmptyWord
         {
@@ -69,7 +69,7 @@ namespace Finite
                             parentheses--;
                             break;
                         case '+':
-                            if (parentheses == 0)
+                            if (parentheses == 0 && Value[i - 1] != '^')
                                 return true;
                             break;
                     }
@@ -82,8 +82,38 @@ namespace Finite
         {
             get
             {
-                //TODO
-                return false;
+                if (IsUnion) return false;
+                if (Value.Length == 3)
+                {
+                    if (Value[1] == '^') return false;
+                    else return true;
+                }
+                else if (Value.Length < 2)
+                    return false;
+
+                int parentheses = 0;
+                int numberOfParentheses = Value.Count(c => c == '(' || c == ')');
+                for (int i = 0; i < Value.Length; i++)
+                {
+                    switch (Value[i])
+                    {
+                        case '(':
+                            parentheses++;
+                            break;
+                        case ')':
+                            parentheses--;
+                            break;
+                        case '*':
+                            if (parentheses == 0 && i == Value.Length - 1 && Value[i-1] == ')' && numberOfParentheses == 2)
+                                return false;
+                            break;
+                        case '^':
+                            if (parentheses == 0 && Value[i + 1] == '+' && i == Value.Length - 2 && Value[i - 1] == ')' && numberOfParentheses == 2)
+                                return false;
+                            break;
+                    }
+                }
+                return true;
             }
         }
 
@@ -91,50 +121,151 @@ namespace Finite
         {
             get
             {
-                //TODO
+                if (Value.Length < 2 || IsUnion) return false;
+                if (Value.Length == 2 && Value[1] == '*') return true;
+                int parenthesesCounter = 0;
+                int numberOfParentheses = Value.Count(c => c == '(' || c == ')');
+                for (int i = 0; i < Value.Length; i++)
+                {
+                    switch (Value[i])
+                    {
+                        case '(':
+                            parenthesesCounter++;
+                            break;
+                        case ')':
+                            parenthesesCounter--;
+                            break;
+                        case '*':
+                            if (parenthesesCounter == 0 && i == Value.Length - 1 && numberOfParentheses == 2 )
+                                return true;
+                            break;
+                    }
+                }
+                return false;
+            }
+        }
+
+        public bool IsPlus
+        {
+            get
+            {
+                if (Value.Length < 3 || IsUnion || IsConcatenation) return false;
+                if (Value.Length == 3 && Value[1] == '^' && Value[2] == '+') return true;
+                int parenthesesCounter = 0;
+                int numberOfParentheses = Value.Count(c => c == '(' || c == ')');
+                for (int i = 0; i < Value.Length; i++)
+                {
+                    switch (Value[i])
+                    {
+                        case '(':
+                            parenthesesCounter++;
+                            break;
+                        case ')':
+                            parenthesesCounter--;
+                            break;
+                        case '^':
+                            if (parenthesesCounter == 0 && Value[i + 1] == '+' && i == Value.Length - 2 && numberOfParentheses == 2)
+                                return true;
+                            break;
+                    }
+                }
                 return false;
             }
         }
 
         public void GetConcatSubExpressions(out RegularExpression r, out RegularExpression s)
         {
+            //if (!IsConcatenation)
+            //    throw new Exception();
             r = null;
             s = null;
 
-            //Beginning with a character
-            if (Value[0] != '(')
+            switch (Value[0])
             {
-                r = new RegularExpression(Value[0]);
-                s = new RegularExpression(Value.Substring(1));
-                return;
-            }
+                case '(':
+                    //Beginning with a '('
+                    Stack stack = new Stack();
+                    int parenthesesCounter = 0;
+                    for (int i = 0; i < Value.Length; i++)
+                    {
+                        if (Value[i] == '(') parenthesesCounter++;
+                        else if (Value[i] == ')') parenthesesCounter--;
+                        stack.Push(Value[i]);
+                        if (parenthesesCounter == 0)
+                        {
+                            StringBuilder sb = new StringBuilder();
+                            while (stack.Count != 0)
+                                sb.Append(stack.Pop());
+                            char[] rValue = sb.ToString().ToCharArray();
+                            Array.Reverse(rValue);
 
-            //Beginning with a '('
-            Stack stack = new Stack();
-            int parenthesesCounter = 0;
-            for(int i = 0; i < Value.Length; i++)
-            {
-                if (Value[i] == '(') parenthesesCounter++;
-                else if (Value[i] == ')') parenthesesCounter--;
-                stack.Push(Value[i]);
-                if (parenthesesCounter == 0)
-                {
-                    StringBuilder sb = new StringBuilder();
-                    while(stack.Count != 0)
-                        sb.Append(stack.Pop());
-                    char[] rValue = sb.ToString().ToCharArray();
-                    Array.Reverse(rValue);
-                    r = new RegularExpression(new String(rValue));
-                    s = new RegularExpression(Value.Substring(i+1));
+                            switch(Value[i+1])
+                            {
+                                case '*':
+                                    r = new RegularExpression(new String(rValue) + Value[i+1]);
+                                    s = new RegularExpression(Value.Substring(i + 2));
+                                    break;
+                                case '^':
+                                    r = new RegularExpression(new String(rValue) + Value[i + 1] + Value[i+2]);
+                                    s = new RegularExpression(Value.Substring(i + 3));
+                                    break;
+                                default:
+                                    r = new RegularExpression(new String(rValue));
+                                    s = new RegularExpression(Value.Substring(i + 1));
+                                    break;
+                            }
+                            return;
+                        }
+                    }
+                    break;
+                default:
+                    //Beginning with a character
+                    switch (Value[1])
+                    {
+                        case '*':
+                            r = new RegularExpression(Value.Substring(0, 2));
+                            s = new RegularExpression(Value.Substring(2));
+                            break;
+                        case '^':
+                            r = new RegularExpression(Value.Substring(0, 3));
+                            s = new RegularExpression(Value.Substring(3));
+                            break;
+                        default:
+                            r = new RegularExpression(Value[0]);
+                            s = new RegularExpression(Value.Substring(1));
+                            break;
+                    }
                     return;
-                }
             }
         }
 
         public void GetUnionSubExpressions(out RegularExpression r, out RegularExpression s)
         {
-            //TODO
+            if (!IsUnion)
+                throw new Exception();
             r = s = null;
+            Stack stack = new Stack();
+            int parentheses = 0;
+            
+            for (int i = 0; i < Value.Length; i++)
+            {
+                switch (Value[i])
+                {
+                    case '(':
+                        parentheses++;
+                        break;
+                    case ')':
+                        parentheses--;
+                        break;
+                    case '+':
+                        if (parentheses == 0 && Value[i - 1] != '^')
+                        {
+                            r = new RegularExpression(Value.Substring(0,i));
+                            s = new RegularExpression(Value.Substring(i+1));
+                        }
+                        break;
+                }
+            }
         }
 
         public RegularExpression Concatenate(RegularExpression re)

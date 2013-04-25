@@ -51,11 +51,11 @@ namespace Finite
             {
                 return CreateEmptySet();
             }
-            else if (re.Value.Equals(a.ToString()))
+            else if (re.Value == a.ToString())
             {
                 return new RegularExpression();
             }
-            else if (re.Value.Length == 1 && !re.Value.Equals(a.ToString()))
+            else if (re.Value.Length == 1 && !(re.Value == a.ToString()))
             {
                 return CreateEmptySet();
             }
