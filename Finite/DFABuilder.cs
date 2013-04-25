@@ -44,7 +44,7 @@ namespace Finite
             return null; //indicates error
         }
 
-        private static RegularExpression derivative(RegularExpression re, char a)
+        public static RegularExpression Derive(RegularExpression re, char a)
         {
             RegularExpression r, s;
             if (re.IsEmptyWord)
@@ -66,16 +66,25 @@ namespace Finite
             else if (re.IsConcatenation)
             {
                 re.GetConcatSubExpressions(out r, out s);
-                return derivative(r, a).Concatenate(s).Union(v(r).Concatenate(derivative(s, a)));
+                return Derive(r, a).Concatenate(s).Union(v(r).Concatenate(Derive(s, a)));
             }
             else if (re.IsKleene)
             {
-                return derivative(re, a).Concatenate(new RegularExpression(re.Value+"*"));
+                string expUnderStar;
+                if (re.Value[0] == '(')
+                {
+                    expUnderStar = re.Value.Substring(1, re.Value.Length - 3);
+                }
+                else
+                {
+                    expUnderStar = re.Value[0].ToString();
+                }
+                return Derive(new RegularExpression(expUnderStar), a).Concatenate(new RegularExpression(re.Value));
             }
             else if (re.IsUnion)
             {
                 re.GetUnionSubExpressions(out r, out s);
-                return derivative(r, a).Union(derivative(s, a));
+                return Derive(r, a).Union(Derive(s, a));
             }
 
             return null; //indicates error

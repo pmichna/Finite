@@ -8,7 +8,18 @@ namespace Finite
 {
     public class State
     {
-        private Dictionary<State, char> transistions = new Dictionary<State, char>();
+        private Dictionary<char, State> transistions = new Dictionary<char, State>();
         public bool IsFinal { get; set; }
+        public string Label { get; set; }
+
+        public State(string s)
+        {
+            Label = s;
+        }
+
+        public void addTransition(State to, char trans)
+        {
+            transistions.Add(trans, to);
+        }
     }
 }

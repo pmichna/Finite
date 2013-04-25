@@ -11,11 +11,24 @@ namespace Finite
         public HashSet<State> States { get; private set; }
         public State InitState { get; set; }
 
-        public DFA(State s)
+        public DFA(RegularExpression re)
         {
             States = new HashSet<State>();
-            InitState = s;
+            InitState = new State(re.Value);
             States.Add(InitState);
         }
+
+        public void addState(RegularExpression re)
+        {
+            States.Add(new State(re.Value));
+        }
+
+        public void addTransition(RegularExpression from, RegularExpression to, char transition)
+        {
+            State stateFrom = States.First(state => state.Label == from.Value);
+            State stateTo = States.First(state => state.Label == to.Value);
+            stateFrom.addTransition(stateTo, transition);
+        }
+
     }
 }

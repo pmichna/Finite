@@ -88,8 +88,15 @@ namespace Finite
                     if (Value[1] == '^') return false;
                     else return true;
                 }
+                else if (Value.Length == 2)
+                {
+                    if (Value[1] == '*') return false;
+                    else return true;
+                }
                 else if (Value.Length < 2)
                     return false;
+
+                int numOfTerms = 0;
 
                 int parentheses = 0;
                 int numberOfParentheses = Value.Count(c => c == '(' || c == ')');
@@ -102,14 +109,22 @@ namespace Finite
                             break;
                         case ')':
                             parentheses--;
+                            if (parentheses == 0)
+                                numOfTerms++;
                             break;
                         case '*':
-                            if (parentheses == 0 && i == Value.Length - 1 && Value[i-1] == ')' && numberOfParentheses == 2)
+                            if (parentheses == 0 && i == Value.Length - 1 && Value[i-1] == ')' && numOfTerms == 1) //numberOfParentheses == 2)
                                 return false;
                             break;
                         case '^':
-                            if (parentheses == 0 && Value[i + 1] == '+' && i == Value.Length - 2 && Value[i - 1] == ')' && numberOfParentheses == 2)
+                            if (parentheses == 0 && Value[i + 1] == '+' && i == Value.Length - 2 && Value[i - 1] == ')' && numOfTerms == 1 )//numberOfParentheses == 2)
                                 return false;
+                            break;
+                        default:
+                            if (i == 0 && Char.IsLetter(Value[i]))
+                                numOfTerms++;
+                            else if(Char.IsLetter(Value[i]) && !Char.IsLetter(Value[i-1]) && parentheses==0)
+                                numOfTerms++;
                             break;
                     }
                 }
@@ -124,7 +139,8 @@ namespace Finite
                 if (Value.Length < 2 || IsUnion) return false;
                 if (Value.Length == 2 && Value[1] == '*') return true;
                 int parenthesesCounter = 0;
-                int numberOfParentheses = Value.Count(c => c == '(' || c == ')');
+                int numOfTerms = 0;
+               // int numberOfParentheses = Value.Count(c => c == '(' || c == ')');
                 for (int i = 0; i < Value.Length; i++)
                 {
                     switch (Value[i])
@@ -134,10 +150,18 @@ namespace Finite
                             break;
                         case ')':
                             parenthesesCounter--;
+                            if (parenthesesCounter == 0)
+                                numOfTerms++;
                             break;
                         case '*':
-                            if (parenthesesCounter == 0 && i == Value.Length - 1 && numberOfParentheses == 2 )
+                            if (parenthesesCounter == 0 && i == Value.Length - 1 && numOfTerms == 1 && Value[i-1] == ')')//&& numberOfParentheses == 2 )
                                 return true;
+                            break;
+                        default:
+                            if (i == 0 && Char.IsLetter(Value[i]))
+                                numOfTerms++;
+                            else if (Char.IsLetter(Value[i]) && !Char.IsLetter(Value[i - 1]) && parenthesesCounter == 0)
+                                numOfTerms++;
                             break;
                     }
                 }
@@ -270,12 +294,23 @@ namespace Finite
 
         public RegularExpression Concatenate(RegularExpression re)
         {
-            Value += re.Value;
+            if (re.Value == EMPTY_WORD.ToString())
+                return this;
+            else if (re.Value == EMPTY_SET)
+                Value = EMPTY_SET;
+            else if (Value == EMPTY_WORD.ToString())
+                Value = re.Value;
+            else if (Value == EMPTY_SET)
+                Value = EMPTY_SET;
+            else
+                Value += re.Value;
             return this;
         }
 
         public RegularExpression Union(RegularExpression re)
         {
+            if (re.Value == EMPTY_SET) return this;
+            if (Value == EMPTY_SET) return re;
             Value += "+" + re.Value;
             return this;
         }
