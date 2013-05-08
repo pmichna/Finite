@@ -70,19 +70,24 @@ namespace Finite
         {
             RegularExpression regex = new RegularExpression(txtInput.Text);
             DFA dfa = DFABuilder.buildDFA(txtInput.Text);
-            string msg = "DFA built! \nInitial state: " + dfa.InitState.Label + "\n\n" +
-                "States:\n";
-            foreach (State s in dfa.States)
-                msg += s.Label + "\n";
-            msg += "\nTransistions:\n";
-            foreach (State s in dfa.States)
-            {
-                foreach (KeyValuePair<char, State> trans in s.transistions)
-                {
-                    msg += "From: " + s.Label + " to: " + trans.Value.Label + " over: " + trans.Key + "\n";
-                }
-            }
-            MessageBox.Show(msg);
+            //string msg = "DFA built! \nInitial state: " + dfa.InitState.Label + "\n\n" +
+            //    "States:\n";
+            //foreach (State s in dfa.States)
+            //    msg += s.Label + "\n";
+            //msg += "\nFinal states:\n";
+            //foreach (State s in dfa.FinalStates)
+            //    msg += s.Label + "\n";
+            //msg += "\nTransistions:\n";
+            //foreach (State s in dfa.States)
+            //{
+            //    foreach (KeyValuePair<char, State> trans in s.transistions)
+            //    {
+            //        msg += "From: " + s.Label + " to: " + trans.Value.Label + " over: " + trans.Key + "\n";
+            //    }
+            //}
+            //MessageBox.Show(msg);
+            var outputWindow = new OutputWindow(dfa);
+            outputWindow.Show();
         }
     }
 }

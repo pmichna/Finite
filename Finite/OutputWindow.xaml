@@ -1,0 +1,14 @@
+﻿<Window x:Class="Finite.OutputWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:graphsharp="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
+        Title="OutputWindow" Height="300" Width="300"
+        x:Name="root">
+    <Grid>
+        <graphsharp:GraphLayout x:Name="graphLayout"
+                                Graph="{Binding ElementName=root,Path=GraphToVizualize}"
+                                LayoutAlgorithmType="Tree"
+                                OverlapRemovalAlgorithmType="FSA"
+                                />
+    </Grid>
+</Window>

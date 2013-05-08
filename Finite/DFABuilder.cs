@@ -30,19 +30,24 @@ namespace Finite
             else if (re.IsConcatenation)
             {
                 re.GetConcatSubExpressions(out r, out s);
-                return v(r).Concatenate(v(s));
+                if (v(r).IsEmptyWord && v(s).IsEmptyWord)
+                    return new RegularExpression();
+                //return v(r).Concatenate(v(s));
             }
             else if (re.IsUnion)
             {
                 re.GetUnionSubExpressions(out r, out s);
-                return v(r).Union(v(s));
+                if (v(r).IsEmptyWord || v(s).IsEmptyWord)
+                    return new RegularExpression();
+                //return v(r).Union(v(s));
             }
             else if (re.IsKleene)
             {
                 return new RegularExpression();
             }
 
-            return null; //indicates error
+            //return null; //indicates error
+            return CreateEmptySet();
         }
 
         public static RegularExpression Derive(RegularExpression re, char a)
@@ -101,13 +106,6 @@ namespace Finite
                     alphabet.Add(c);
             }
             var newStates = new HashSet<State>();
-            //init state
-            //foreach (char c in alphabet)
-            //{
-            //    RegularExpression newRegEx = Derive(new RegularExpression(dfa.InitState.Label), c);
-            //    State newState = new State(newRegEx.Value);
-            //    dfa.States.Add(newState);
-            //}
 
             while (true)
             {
@@ -124,26 +122,22 @@ namespace Finite
                 }
                 int added = 0;
                
-                MessageBoxButton btnMessageBox = MessageBoxButton.YesNo;
-                MessageBoxImage icnMessageBox = MessageBoxImage.Question;
                 foreach (State state in newStates)
                 {
-                    string sCaption = "Something equivalent to " + state.Label + " ?\n";
-                    string sMessageBoxText = "";
-                    foreach (State s in dfa.States)
-                        sMessageBoxText += s.Label + "\n";
-                    MessageBoxResult rsltMessageBox = MessageBox.Show(sMessageBoxText,
-                        sCaption, btnMessageBox, icnMessageBox);
-                    if (rsltMessageBox == MessageBoxResult.No)
-                    {
-                        State newState = new State(state.Label);
-                        dfa.addState(newState);
-                        //dfa.addTransition(
-                        
-                        added++;
-                    }
+                        if (dfa.addState(state))
+                            added++;
                 }
                 if (added == 0) break;
+            }
+            foreach (State state in dfa.States)
+            {
+                RegularExpression reg = v(new RegularExpression(state.Label));
+                string str1 = reg.Value;
+                string str2 = RegularExpression.EMPTY_WORD.ToString();
+                if (str1 == str2)
+                {
+                    state.IsFinal = true;
+                }
             }
             return dfa;
         }

@@ -30,7 +30,7 @@ namespace Finite
         {
             get
             {
-                if (Value.Equals(EMPTY_WORD))
+                if (Value.Equals(EMPTY_WORD.ToString()))
                 {
                     return true;
                 }

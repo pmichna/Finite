@@ -18,9 +18,9 @@ namespace Finite
             States.Add(InitState);
         }
 
-        public void addState(State state)
+        public bool addState(State state)
         {
-            States.Add(state);
+            return States.Add(state);
         }
 
         public void addTransition(RegularExpression from, RegularExpression to, char transition)
@@ -28,6 +28,20 @@ namespace Finite
             State stateFrom = States.First(state => state.Label == from.Value);
             State stateTo = States.First(state => state.Label == to.Value);
             stateFrom.addTransition(stateTo, transition);
+        }
+
+        public List<State> FinalStates
+        {
+            get
+            {
+                List<State> result = new List<State>();
+                foreach (State state in States)
+                {
+                    if (state.IsFinal)
+                        result.Add(state);
+                }
+                return result;
+            }
         }
 
     }

@@ -9,8 +9,8 @@ namespace Finite
     public class State
     {
         public Dictionary<char, State> transistions = new Dictionary<char, State>();
-        public bool IsFinal { get; set; }
         public string Label { get; set; }
+        public bool IsFinal { get; set; }
 
         public State(string s)
         {
@@ -23,7 +23,10 @@ namespace Finite
             foreach(KeyValuePair<char,State> s in transistions)
             {
                 if (s.Value.Label == to.Label && s.Key == trans)
+                {
                     present = true;
+                    break;
+                }
             }
             if(!present)
                 transistions.Add(trans, to);
@@ -46,6 +49,11 @@ namespace Finite
             foreach (char c in Label)
                 result *= c;
             return result;
+        }
+
+        public override string ToString()
+        {
+            return Label;
         }
     }
 }
