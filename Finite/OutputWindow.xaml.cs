@@ -43,33 +43,33 @@ namespace Finite
            // var g1 = new BidirectionalGraph<object, IEdge<object>>(true);
 
             //add vertices
-            string[] vertices = new string[5];
-            for (int i = 0; i < 5; i++)
-            {
-                vertices[i] = i.ToString();
-                g.AddVertex(vertices[i]);
-            }
-            //foreach (State s in _dfa.States)
+            //string[] vertices = new string[5];
+            //for (int i = 0; i < 5; i++)
             //{
-            //    g.AddVertex(s.ToString());
+            //    vertices[i] = i.ToString();
+            //    g.AddVertex(vertices[i]);
             //}
+            foreach (State s in _dfa.States)
+            {
+                g.AddVertex(s.ToString());
+            }
 
             //add edges
-            //foreach (State s in _dfa.States)
-            //{
-            //    foreach (KeyValuePair<char, State> t in s.transistions)
-            //    {
-            //        g.AddEdge(new Edge<object>(s.ToString(), t.Value.ToString()));
-            //    }
-            //}
+            foreach (State s in _dfa.States)
+            {
+                foreach (KeyValuePair<char, State> t in s.transistions)
+                {
+                    g.AddEdge(new Edge<object>(s.ToString(), t.Value.ToString()));
+                }
+            }
 
-            g.AddEdge(new Edge<object>(vertices[0], vertices[1]));
-            g.AddEdge(new Edge<object>(vertices[1], vertices[2]));
-            g.AddEdge(new Edge<object>(vertices[2], vertices[3]));
-            g.AddEdge(new Edge<object>(vertices[3], vertices[1]));
-            g.AddEdge(new Edge<object>(vertices[1], vertices[4]));
-            g.AddEdge(new Edge<object>(vertices[1], vertices[4]));
-            g.AddEdge(new Edge<object>(vertices[4], vertices[4]));
+            //g.AddEdge(new Edge<object>(vertices[0], vertices[1]));
+            //g.AddEdge(new Edge<object>(vertices[1], vertices[2]));
+            //g.AddEdge(new Edge<object>(vertices[2], vertices[3]));
+            //g.AddEdge(new Edge<object>(vertices[3], vertices[1]));
+            //g.AddEdge(new Edge<object>(vertices[1], vertices[4]));
+            //g.AddEdge(new Edge<object>(vertices[1], vertices[4]));
+            //g.AddEdge(new Edge<object>(vertices[4], vertices[4]));
 
             _graphToVizualize = g;
 

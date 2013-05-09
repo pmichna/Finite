@@ -86,8 +86,16 @@ namespace Finite
             //    }
             //}
             //MessageBox.Show(msg);
-            var outputWindow = new OutputWindow(dfa);
-            outputWindow.Show();
+            if ((bool)radioImmediate.IsChecked)
+            {
+                var outputWindow = new OutputWindow(dfa);
+                outputWindow.Show();
+            }
+            else if ((bool)radioStep.IsChecked)
+            {
+                var outputStepWindow = new OutputStepWindow(dfa);
+                outputStepWindow.Show();
+            }
         }
     }
 }
