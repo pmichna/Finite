@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace Finite
 {
-    public static class DFABuilder
+    public class DFAStepBuilder
     {
+        private List<Step> _steps = new List<Step>();
+
         private static RegularExpression CreateEmptySet()
         {
             return new RegularExpression(RegularExpression.EMPTY_SET);
@@ -109,7 +110,7 @@ namespace Finite
             return null; //indicates error
         }
 
-        public static DFA buildDFA(string re)
+        public List<Step> buildStepDFA(string re)
         {
             DFA dfa = new DFA(new RegularExpression(re));
             HashSet<char> alphabet = new HashSet<char>();
@@ -131,14 +132,19 @@ namespace Finite
                         State newState = new State(newRegEx.Value);
                         newStates.Add(newState);
                         state.addTransition(newState, c);
+                        Step newStep = new Step(state.Label, newState.Label, c);
+                        if(!stepExists(newStep))
+                            _steps.Add(newStep);
                     }
                 }
                 int added = 0;
-               
+
                 foreach (State state in newStates)
                 {
-                        if (dfa.addState(state))
-                            added++;
+                    if (dfa.addState(state))
+                    {
+                        added++;
+                    }
                 }
                 if (added == 0) break;
             }
@@ -152,8 +158,19 @@ namespace Finite
                     state.IsFinal = true;
                 }
             }
+            return _steps;
+        }
 
-            return dfa;
+        private bool stepExists(Step step)
+        {
+            foreach (Step s in _steps)
+            {
+                if (s.From == step.From &&
+                    s.To == step.To &&
+                    s.Over == step.Over)
+                    return true;
+            }
+            return false;
         }
     }
 }

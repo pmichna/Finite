@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
+using System.Drawing;
+using GraphVizWrapper.Commands;
+using GraphVizWrapper.Interfaces;
+using GraphVizWrapper.Queries;
 
 namespace Finite
 {
@@ -20,6 +26,7 @@ namespace Finite
     /// </summary>
     public partial class MainWindow : Window
     {
+        private OutputWindow _outputWindow;
         public MainWindow()
         {
             InitializeComponent();
@@ -88,14 +95,20 @@ namespace Finite
             //MessageBox.Show(msg);
             if ((bool)radioImmediate.IsChecked)
             {
-                var outputWindow = new OutputWindow(dfa);
-                outputWindow.Show();
+                if (_outputWindow != null)
+                {
+                    _outputWindow.Close();
+                }
+                _outputWindow = new OutputWindow(dfa);
+                _outputWindow.Show();
             }
             else if ((bool)radioStep.IsChecked)
             {
-                var outputStepWindow = new OutputStepWindow(dfa);
+                var outputStepWindow = new OutputStepWindow(txtInput.Text);
                 outputStepWindow.Show();
             }
         }
+
+        
     }
 }

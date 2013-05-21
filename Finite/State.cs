@@ -10,6 +10,7 @@ namespace Finite
     {
         public Dictionary<char, State> transistions = new Dictionary<char, State>();
         public string Label { get; set; }
+        public string QLabel { get; set; }
         public bool IsFinal { get; set; }
 
         public State(string s)
@@ -17,7 +18,7 @@ namespace Finite
             Label = s;
         }
 
-        public void addTransition(State to, char trans)
+        public bool addTransition(State to, char trans)
         {
             bool present = false;
             foreach(KeyValuePair<char,State> s in transistions)
@@ -28,8 +29,13 @@ namespace Finite
                     break;
                 }
             }
-            if(!present)
+            if (!present)
+            {
                 transistions.Add(trans, to);
+                return true;
+            }
+            else
+                return false;
         }
 
         public override bool Equals(object obj)
