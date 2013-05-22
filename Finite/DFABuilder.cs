@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace Finite
 {
-    public static class DFABuilder
+    public class DFABuilder
     {
+        public List<Step> Steps { get; private set; }
+        public DFA Dfa { get; private set; }
+
+        public DFABuilder()
+        {
+            Steps = new List<Step>();
+        }
+
         private static RegularExpression CreateEmptySet()
         {
             return new RegularExpression(RegularExpression.EMPTY_SET);
@@ -32,21 +39,17 @@ namespace Finite
                 re.GetConcatSubExpressions(out r, out s);
                 if (v(r).IsEmptyWord && v(s).IsEmptyWord)
                     return new RegularExpression();
-                //return v(r).Concatenate(v(s));
             }
             else if (re.IsUnion)
             {
                 re.GetUnionSubExpressions(out r, out s);
                 if (v(r).IsEmptyWord || v(s).IsEmptyWord)
                     return new RegularExpression();
-                //return v(r).Union(v(s));
             }
             else if (re.IsKleene)
             {
                 return new RegularExpression();
             }
-
-            //return null; //indicates error
             return CreateEmptySet();
         }
 
@@ -109,9 +112,9 @@ namespace Finite
             return null; //indicates error
         }
 
-        public static DFA buildDFA(string re)
+        public void buildDFA(string re)
         {
-            DFA dfa = new DFA(new RegularExpression(re));
+            Dfa = new DFA(new RegularExpression(re));
             HashSet<char> alphabet = new HashSet<char>();
             foreach (char c in re)
             {
@@ -120,40 +123,84 @@ namespace Finite
             }
             var newStates = new HashSet<State>();
 
-            while (true)
+            int added = 0;
+            //int qcounter = 1;
+            do
             {
+                added = 0;
                 newStates.Clear();
-                foreach (State state in dfa.States)
+                foreach (State state in Dfa.States)
                 {
                     foreach (char c in alphabet)
                     {
-                        RegularExpression newRegEx = Derive(new RegularExpression(state.Label), c);
-                        State newState = new State(newRegEx.Value);
+                        RegularExpression newRegEx = Derive(new RegularExpression(state.RegexLabel), c);
+                        State newState = new State(newRegEx, IsExpressionFinal(newRegEx));
                         newStates.Add(newState);
-                        state.addTransition(newState, c);
+                        Dfa.addTransition(state.RegexLabel, newState.RegexLabel, c);
+                        Step newStep = new Step(state, newState, c);
+
+                        //bool stateExistsInDfa = false;
+                        //foreach (State s in Dfa.States)
+                        //{
+                        //    if (s.RegexLabel == newState.RegexLabel)
+                        //    {
+                        //        stateExistsInDfa = true;
+                        //        break;
+                        //    }
+                        //}
+
+                        //if (!stateExistsInDfa)
+                        //{
+                        //    newState.QLabel = "q" + qcounter++.ToString();
+                        //}
+                        if (!stepExists(newStep))
+                        {
+                            Steps.Add(newStep);
+                        }
                     }
                 }
-                int added = 0;
-               
+
                 foreach (State state in newStates)
                 {
-                        if (dfa.addState(state))
-                            added++;
+                    if (Dfa.addState(state))
+                    {
+                        added++;
+                    }
                 }
-                if (added == 0) break;
-            }
-            foreach (State state in dfa.States)
-            {
-                RegularExpression reg = v(new RegularExpression(state.Label));
-                string str1 = reg.Value;
-                string str2 = RegularExpression.EMPTY_WORD.ToString();
-                if (str1 == str2)
-                {
-                    state.IsFinal = true;
-                }
-            }
+            } while (added != 0);
+        }
 
-            return dfa;
+        //private bool stateExists(State state)
+        //{
+        //    foreach (State s in Dfa.States)
+        //    {
+        //        if (s.RegexLabel == state.RegexLabel)
+        //            return true;
+        //    }
+        //    return false;
+        //}
+
+        private bool stepExists(Step step)
+        {
+            foreach (Step s in Steps)
+            {
+                if (s.From.RegexLabel == step.From.RegexLabel &&
+                    s.To.RegexLabel == step.To.RegexLabel &&
+                    s.Over == step.Over)
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool IsExpressionFinal(RegularExpression re)
+        {
+            string str1 = v(re).Value;
+            string str2 = RegularExpression.EMPTY_WORD.ToString();
+            if (str1 == str2)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

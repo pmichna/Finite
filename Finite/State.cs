@@ -9,13 +9,14 @@ namespace Finite
     public class State
     {
         public Dictionary<char, State> transistions = new Dictionary<char, State>();
-        public string Label { get; set; }
+        public string RegexLabel { get; set; }
         public string QLabel { get; set; }
-        public bool IsFinal { get; set; }
+        public bool IsFinal { get; private set; }
 
-        public State(string s)
+        public State(RegularExpression re, bool isFinal)
         {
-            Label = s;
+            RegexLabel = re.Value;
+            IsFinal = isFinal;
         }
 
         public bool addTransition(State to, char trans)
@@ -23,7 +24,7 @@ namespace Finite
             bool present = false;
             foreach(KeyValuePair<char,State> s in transistions)
             {
-                if (s.Value.Label == to.Label && s.Key == trans)
+                if (s.Value.RegexLabel == to.RegexLabel && s.Key == trans)
                 {
                     present = true;
                     break;
@@ -46,20 +47,20 @@ namespace Finite
             State state = obj as State;
             if ((Object)state == null)
                 return false;
-            return Label.Equals(state.Label);
+            return RegexLabel.Equals(state.RegexLabel);
         }
 
         public override int GetHashCode()
         {
             int result=1;
-            foreach (char c in Label)
+            foreach (char c in RegexLabel)
                 result *= c;
             return result;
         }
 
         public override string ToString()
         {
-            return Label;
+            return RegexLabel;
         }
     }
 }

@@ -20,8 +20,6 @@ namespace Finite
             Value = str;
         }
 
-
-
         public RegularExpression() : this(EMPTY_WORD) { }
 
         public RegularExpression(char c) : this(c.ToString()) { }

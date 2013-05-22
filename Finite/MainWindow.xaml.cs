@@ -27,88 +27,30 @@ namespace Finite
     public partial class MainWindow : Window
     {
         private OutputWindow _outputWindow;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void btnTest_Click(object sender, RoutedEventArgs e)
-        {
-            RegularExpression regex = new RegularExpression(txtInput.Text);
-            //String msg = regex.Value + "\n" +
-            //    "IsUnion: " + regex.IsUnion + "\n" +
-            //    "IsConcatenation: " + regex.IsConcatenation + "\n" +
-            //    "IsPlus: " + regex.IsPlus + "\n" +
-            //    "IsKleene: " + regex.IsKleene + "\n" +
-            //    "IsEmptySet: " + regex.IsEmptySet + "\n" +
-            //    "IsEmptyWord: " + regex.IsEmptyWord + "\n";
-            //RegularExpression r, s;
-            //if (regex.IsConcatenation)
-            //{
-            //    regex.GetConcatSubExpressions(out r, out s);
-            //    msg += "Concat subexpressions: " + r.Value + "___" + s.Value + "\n";
-            //}
-            //if (regex.IsUnion)
-            //{
-            //    regex.GetUnionSubExpressions(out r, out s);
-            //    msg += "Union subexpressions: " + r.Value + "___" + s.Value + "\n";
-            //}
-            //MessageBox.Show(msg);
-            //char a = txtChar.Text[0];
-            //string msg = DFABuilder.Derive(regex, a).Value;
-            //MessageBox.Show(msg);
-            DFA dfa = DFABuilder.buildDFA(txtInput.Text);
-            string msg = "DFA built! \nInitial state: " + dfa.InitState.Label + "\n\n" +
-                "States:\n";
-            foreach (State s in dfa.States)
-                msg += s.Label + "\n";
-            msg += "\nTransistions:\n";
-            foreach (State s in dfa.States)
-            {
-                foreach(KeyValuePair<char, State> trans in s.transistions)
-                {
-                    msg += "From: " + s.Label + " to: " + trans.Value.Label + " over: " + trans.Key + "\n";
-                }
-            }
-            MessageBox.Show(msg);
-        }
-
         private void btnGenerate_Click(object sender, RoutedEventArgs e)
         {
-            RegularExpression regex = new RegularExpression(txtInput.Text);
-            DFA dfa = DFABuilder.buildDFA(txtInput.Text);
-            //string msg = "DFA built! \nInitial state: " + dfa.InitState.Label + "\n\n" +
-            //    "States:\n";
-            //foreach (State s in dfa.States)
-            //    msg += s.Label + "\n";
-            //msg += "\nFinal states:\n";
-            //foreach (State s in dfa.FinalStates)
-            //    msg += s.Label + "\n";
-            //msg += "\nTransistions:\n";
-            //foreach (State s in dfa.States)
-            //{
-            //    foreach (KeyValuePair<char, State> trans in s.transistions)
-            //    {
-            //        msg += "From: " + s.Label + " to: " + trans.Value.Label + " over: " + trans.Key + "\n";
-            //    }
-            //}
-            //MessageBox.Show(msg);
+            string regex = txtInput.Text;
+            DFABuilder dfaBuilder = new DFABuilder();
+            dfaBuilder.buildDFA(regex);
+            if (_outputWindow != null)
+            {
+                _outputWindow.Close();
+            }
             if ((bool)radioImmediate.IsChecked)
             {
-                if (_outputWindow != null)
-                {
-                    _outputWindow.Close();
-                }
-                _outputWindow = new OutputWindow(dfa);
-                _outputWindow.Show();
+                _outputWindow = new OutputWindow(dfaBuilder, false);
             }
             else if ((bool)radioStep.IsChecked)
             {
-                var outputStepWindow = new OutputStepWindow(txtInput.Text);
-                outputStepWindow.Show();
+                _outputWindow = new OutputWindow(dfaBuilder, true);
             }
+            _outputWindow.Show();
         }
-
-        
     }
 }

@@ -8,13 +8,17 @@ namespace Finite
 {
     public class Step
     {
-        public string From { get; private set; }
-        public string To { get; private set; }
-        public char Over { get; private set; }
-        public bool IsInit { get; set; }
-        public bool IsFinal { get; set; }
+        //public string FromRegex { get; private set; }
+        //public string ToRegex { get; private set; }
+        //public char Over { get; private set; }
+        //public string FromQLabel { get; set; }
+        //public string ToQLabel { get; set; }
 
-        public Step(string from, string to, char over)
+        public State From { get; private set; }
+        public State To { get; private set; }
+        public char Over { get; private set; }
+
+        public Step(State from, State to, char over)
         {
             From = from;
             To = to;
