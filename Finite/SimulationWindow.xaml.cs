@@ -89,6 +89,19 @@ namespace Finite
             imgGraph.Source = bmp;
             btnNextStep.IsEnabled = true;
             btnStartSimulation.IsEnabled = false;
+            if (_word.Length == 1)
+            {
+                if (_currentState.IsFinal)
+                {
+                    MessageBox.Show("The word \"" + _word + "\" is accepted.");
+                }
+                else
+                {
+                    MessageBox.Show("The word " + _word + " is not accepted.");
+                }
+                btnNextStep.IsEnabled = false;
+                btnStartSimulation.IsEnabled = true;
+            }
         }
 
         private string generateDot()
@@ -205,7 +218,7 @@ namespace Finite
 
         private void btnNextStep_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentChar == _word.Length - 1)
+            if ( _currentChar == _word.Length - 1)
             {
                 BitmapImage nextBmp = dot2bmp(generateDot());
                 imgGraph.Source = nextBmp;
@@ -219,7 +232,6 @@ namespace Finite
                 }
                 btnNextStep.IsEnabled = false;
                 btnStartSimulation.IsEnabled = true;
-
                 return;
             }
             else

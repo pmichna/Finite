@@ -101,7 +101,7 @@ namespace Finite
                 {
                     expUnderPlus = re.Value[0].ToString();
                 }
-                return Derive(new RegularExpression(expUnderPlus), a).Concatenate(new RegularExpression(expUnderPlus + "*"));
+                return Derive(new RegularExpression(expUnderPlus), a).Concatenate(new RegularExpression("(" + expUnderPlus + ")" + "*"));
             }
             else if (re.IsUnion)
             {

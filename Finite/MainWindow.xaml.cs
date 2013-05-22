@@ -52,5 +52,10 @@ namespace Finite
             }
             _outputWindow.Show();
         }
+
+        private void comboBoxInput_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            txtInput.Text = ((ComboBoxItem)comboBoxInput.SelectedItem).Content.ToString();
+        }
     }
 }

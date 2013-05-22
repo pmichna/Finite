@@ -18,7 +18,20 @@
         <Label Grid.Column="0" Grid.Row="1">Select from a list:</Label>
         <Label Grid.Column="0" Grid.Row="2" Grid.RowSpan="2" VerticalAlignment="Center">Mode:</Label>
         <TextBox Name="txtInput" Grid.Column="1" Grid.Row="0">ab*</TextBox>
-        <ComboBox Name="comboBoxInput" Grid.Column="1" Grid.Row="1"/>
+        <ComboBox Name="comboBoxInput" Grid.Column="1" Grid.Row="1" SelectionChanged="comboBoxInput_SelectionChanged">
+            <ComboBox.Items>
+                <ComboBoxItem>$</ComboBoxItem>
+                <ComboBoxItem>ab</ComboBoxItem>
+                <ComboBoxItem>a+b</ComboBoxItem>
+                <ComboBoxItem>a*</ComboBoxItem>
+                <ComboBoxItem>a^+</ComboBoxItem>
+                <ComboBoxItem>(ab)^+</ComboBoxItem>
+                <ComboBoxItem>ab^+</ComboBoxItem>
+                <ComboBoxItem>a^+b</ComboBoxItem>
+                <ComboBoxItem>a*+b*</ComboBoxItem>
+                <ComboBoxItem>a*b*</ComboBoxItem>
+            </ComboBox.Items>
+        </ComboBox>
         <RadioButton GroupName="mode" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Name="radioImmediate" IsChecked="True">Immediate</RadioButton>
         <RadioButton GroupName="mode" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Name="radioStep">Step-by-step</RadioButton>
         <Button Name="btnGenerate" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Click="btnGenerate_Click">Generate</Button>

@@ -163,11 +163,15 @@ namespace Finite
             {
                 if (l.Item2 == from)
                     isFromPresent = true;
-                if (l.Item2 == to)
-                    isToPresent = true;
+
             }
             if(!isFromPresent)
                 _mainViewModel.Labels.Add(Tuple.Create(_steps[_stepCounter].From.QLabel, _steps[_stepCounter].From.RegexLabel));
+            foreach (Tuple<string, string> l in _mainViewModel.Labels)
+            {
+                if (l.Item2 == to)
+                    isToPresent = true;
+            }
             if(!isToPresent)
                 _mainViewModel.Labels.Add(Tuple.Create(_steps[_stepCounter].To.QLabel, _steps[_stepCounter].To.RegexLabel));
             generateContentDot(++_stepCounter);

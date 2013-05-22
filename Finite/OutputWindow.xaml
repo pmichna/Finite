@@ -25,11 +25,11 @@
                     <DataGridTextColumn Width="*" x:Name="regexColumn" Header="Regular expr." Binding="{Binding Path=Item2, Mode=OneWay}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid Width="200" Name="dataTrans" ItemsSource="{Binding Transitions}" AutoGenerateColumns="False" CanUserAddRows="False">
+            <DataGrid Width="300" Name="dataTrans" ItemsSource="{Binding Transitions}" AutoGenerateColumns="False" CanUserAddRows="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn x:Name="fromColumn" Header="From" Binding="{Binding Path=From, Mode= OneWay}"></DataGridTextColumn>
-                    <DataGridTextColumn x:Name="overColumn" Header="Over" Binding="{Binding Path=Over, Mode= OneWay}"></DataGridTextColumn>
-                    <DataGridTextColumn Width="*" x:Name="toColumn" Header="To" Binding="{Binding Path=To, Mode= OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn x:Name="fromColumn" Header="Regular expression" Binding="{Binding Path=From, Mode= OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn x:Name="overColumn" Header="Subtraction" Binding="{Binding Path=Over, Mode= OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="*" x:Name="toColumn" Header="Result" Binding="{Binding Path=To, Mode= OneWay}"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
