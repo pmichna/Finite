@@ -8,9 +8,9 @@ namespace Finite
 {
     public class Transition
     {
-        public string From { get; private set; }
-        public string To { get; private set; }
-        public char Over { get; private set; }
+        public string From { get; set; }
+        public string To { get; set; }
+        public char Over { get; set; }
 
         public Transition(string from, string to, char over)
         {

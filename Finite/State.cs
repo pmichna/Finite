@@ -54,7 +54,7 @@ namespace Finite
         {
             int result=1;
             foreach (char c in RegexLabel)
-                result *= c;
+                result *= (c+1);
             return result;
         }
 

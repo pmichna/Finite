@@ -1,0 +1,18 @@
+﻿<Window x:Class="Finite.MyDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MyDialog" Height="300" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Label Name="lbl"/>
+        <ListBox Name="lstStates" Grid.Row="1" SelectionChanged="lstStates_SelectionChanged"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+        <Button Margin="5" Width="100" Name="btnOk" Click="btnOk_Click">OK</Button>
+            <Button Margin="5" Width="150" Name="btnCancel" Click="btnCancel_Click">Nothing equivalent</Button>
+        </StackPanel>
+    </Grid>
+</Window>

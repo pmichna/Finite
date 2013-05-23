@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Finite
 {
@@ -115,70 +116,165 @@ namespace Finite
         public void buildDFA(string re)
         {
             Dfa = new DFA(new RegularExpression(re));
-            HashSet<char> alphabet = new HashSet<char>();
-            foreach (char c in re)
-            {
-                if (Char.IsLetter(c))
-                    alphabet.Add(c);
-            }
+            //HashSet<char> alphabet = new HashSet<char>();
+            //foreach (char c in re)
+            //{
+            //    if (Char.IsLetter(c))
+            //        alphabet.Add(c);
+            //}
             var newStates = new HashSet<State>();
+            var newTransitions = new List<Transition>();
+            var newSteps = new List<Step>();
 
             int added = 0;
-            //int qcounter = 1;
             do
             {
                 added = 0;
                 newStates.Clear();
+                newTransitions.Clear();
+                newSteps.Clear();
                 foreach (State state in Dfa.States)
                 {
-                    foreach (char c in alphabet)
+                    foreach (char c in Dfa.Alphabet)
                     {
                         RegularExpression newRegEx = Derive(new RegularExpression(state.RegexLabel), c);
-                        State newState = new State(newRegEx, IsExpressionFinal(newRegEx));
+                        //RegularExpression test = new RegularExpression(state.RegexLabel);
+                        State newState = null;
+                        newState = new State(newRegEx, IsExpressionFinal(newRegEx));
                         newStates.Add(newState);
-                        Dfa.addTransition(state.RegexLabel, newState.RegexLabel, c);
+                        //Dfa.addTransition(state.RegexLabel, newState.RegexLabel, c); // zmień na newTransitions i dodawaj tak ja states
+                        newTransitions.Add(new Transition(state.RegexLabel, newState.RegexLabel, c));
                         Step newStep = new Step(state, newState, c);
-
-                        //bool stateExistsInDfa = false;
-                        //foreach (State s in Dfa.States)
+                        newSteps.Add(newStep);
+                        //if (!stepExists(newStep))
                         //{
-                        //    if (s.RegexLabel == newState.RegexLabel)
-                        //    {
-                        //        stateExistsInDfa = true;
-                        //        break;
-                        //    }
+                        //    Steps.Add(newStep);
                         //}
 
-                        //if (!stateExistsInDfa)
-                        //{
-                        //    newState.QLabel = "q" + qcounter++.ToString();
-                        //}
-                        if (!stepExists(newStep))
-                        {
-                            Steps.Add(newStep);
-                        }
                     }
                 }
 
                 foreach (State state in newStates)
                 {
+                    bool hasSubstring = false;
+                    foreach (State s1 in Dfa.States)
+                    {
+                        if(state.RegexLabel.Contains(s1.RegexLabel) && state.RegexLabel != s1.RegexLabel)
+                        {
+                            hasSubstring = true;
+                            break;
+                        }
+                    }
+                    State equivalent = null;
+                    if (hasSubstring)
+                    {
+                        var testWindow = new MyDialog(state.RegexLabel, Dfa.States);
+                        if (testWindow.ShowDialog() == false)
+                        {
+                            equivalent = testWindow.GetSelectedState();
+                        }
+                        if (equivalent == null)
+                        {
+                            if (Dfa.addState(state))
+                            {
+                                added++;
+                            }
+                        }
+                        else
+                        {
+                            // update transitions
+                            foreach (Transition t in Dfa.Transitions)
+                            {
+                                if (t.From == state.RegexLabel)
+                                    t.From = equivalent.RegexLabel;
+                                if (t.To == state.RegexLabel)
+                                    t.To = equivalent.RegexLabel;
+                            }
+                            foreach (Transition t in newTransitions)
+                            {
+                                if (t.From == state.RegexLabel)
+                                    t.From = equivalent.RegexLabel;
+                                if (t.To == state.RegexLabel)
+                                    t.To = equivalent.RegexLabel;
+                            }
+                            //update steps
+                            foreach (Step step in Steps)
+                            {
+                                if (step.From.RegexLabel == state.RegexLabel)
+                                    step.From.RegexLabel = equivalent.RegexLabel;
+                                if (step.To.RegexLabel == state.RegexLabel)
+                                    step.To.RegexLabel = equivalent.RegexLabel;
+                            }
+                            foreach (Step step in newSteps)
+                            {
+                                if (step.From.RegexLabel == state.RegexLabel)
+                                    step.From.RegexLabel = equivalent.RegexLabel;
+                                if (step.To.RegexLabel == state.RegexLabel)
+                                    step.To.RegexLabel = equivalent.RegexLabel;
+                            }
+                            if (Dfa.addState(equivalent))
+                            {
+                                
+                                added++;
+                            }
+                        }
+                    }
                     if (Dfa.addState(state))
                     {
+
                         added++;
                     }
                 }
+                foreach (Transition t in newTransitions)
+                {
+                    bool isTransitionAlreadyPresent = false;
+
+                    foreach (Transition t1 in Dfa.Transitions)
+                    {
+                        if (t1.From == t.From && t1.To == t.To && t.Over == t1.Over)
+                        {
+                            isTransitionAlreadyPresent = true;
+                            break;
+                        }
+                    }
+
+                    if (isTransitionAlreadyPresent)
+                        continue;
+
+                    //bool containsFrom = false;
+                    //bool containsTo = false;
+                    //foreach (State s in Dfa.States)
+                    //{
+                    //    if (s.RegexLabel == t.From)
+                    //        containsFrom = true;
+                    //    if (s.RegexLabel == t.To)
+                    //        containsTo = true;
+                    //}
+                    //if (containsTo && containsFrom)
+                        Dfa.Transitions.Add(t);
+                }
+
+                foreach (Step step in newSteps)
+                {
+
+                    bool isStepAlreadyPresent = false;
+
+                    foreach (Step s1 in Steps)
+                    {
+                        if (step.From.RegexLabel == s1.From.RegexLabel && step.To.RegexLabel == s1.To.RegexLabel && step.Over == s1.Over)
+                        {
+                            isStepAlreadyPresent = true;
+                            break;
+                        }
+                    }
+
+                    if (isStepAlreadyPresent)
+                        continue;
+                    Steps.Add(step);
+                }
+
             } while (added != 0);
         }
-
-        //private bool stateExists(State state)
-        //{
-        //    foreach (State s in Dfa.States)
-        //    {
-        //        if (s.RegexLabel == state.RegexLabel)
-        //            return true;
-        //    }
-        //    return false;
-        //}
 
         private bool stepExists(Step step)
         {
