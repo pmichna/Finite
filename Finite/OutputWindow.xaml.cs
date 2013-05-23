@@ -59,6 +59,10 @@ namespace Finite
         {
             InitializeComponent();
             _dfa = dfaBuilder.Dfa;
+            if (_dfa.States.Count >= 25)
+            {
+                MessageBox.Show("Warning! There are more than 25 states generated. The proper working of the application is not guaranteed.");
+            }
             _mainViewModel = new MainViewModel();
             _dfaBuilder = dfaBuilder;
             this.DataContext = _mainViewModel;

@@ -116,12 +116,6 @@ namespace Finite
         public void buildDFA(string re)
         {
             Dfa = new DFA(new RegularExpression(re));
-            //HashSet<char> alphabet = new HashSet<char>();
-            //foreach (char c in re)
-            //{
-            //    if (Char.IsLetter(c))
-            //        alphabet.Add(c);
-            //}
             var newStates = new HashSet<State>();
             var newTransitions = new List<Transition>();
             var newSteps = new List<Step>();
@@ -138,19 +132,12 @@ namespace Finite
                     foreach (char c in Dfa.Alphabet)
                     {
                         RegularExpression newRegEx = Derive(new RegularExpression(state.RegexLabel), c);
-                        //RegularExpression test = new RegularExpression(state.RegexLabel);
                         State newState = null;
                         newState = new State(newRegEx, IsExpressionFinal(newRegEx));
                         newStates.Add(newState);
-                        //Dfa.addTransition(state.RegexLabel, newState.RegexLabel, c); // zmień na newTransitions i dodawaj tak ja states
                         newTransitions.Add(new Transition(state.RegexLabel, newState.RegexLabel, c));
                         Step newStep = new Step(state, newState, c);
                         newSteps.Add(newStep);
-                        //if (!stepExists(newStep))
-                        //{
-                        //    Steps.Add(newStep);
-                        //}
-
                     }
                 }
 
@@ -240,18 +227,7 @@ namespace Finite
 
                     if (isTransitionAlreadyPresent)
                         continue;
-
-                    //bool containsFrom = false;
-                    //bool containsTo = false;
-                    //foreach (State s in Dfa.States)
-                    //{
-                    //    if (s.RegexLabel == t.From)
-                    //        containsFrom = true;
-                    //    if (s.RegexLabel == t.To)
-                    //        containsTo = true;
-                    //}
-                    //if (containsTo && containsFrom)
-                        Dfa.Transitions.Add(t);
+                    Dfa.Transitions.Add(t);
                 }
 
                 foreach (Step step in newSteps)
