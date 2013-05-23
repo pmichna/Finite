@@ -73,6 +73,11 @@ namespace Finite
 
         private void btnStartSimulation_Click(object sender, RoutedEventArgs e)
         {
+            if (txtWord.Text.Length == 0)
+            {
+                MessageBox.Show("Enter a word first.");
+                return;
+            }
             _word = txtWord.Text;
             foreach (char c in _word)
             {
