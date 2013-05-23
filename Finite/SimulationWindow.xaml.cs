@@ -78,7 +78,7 @@ namespace Finite
             {
                 if (!_dfa.Alphabet.Contains(c))
                 {
-                    MessageBox.Show("Your word contains illegal characters or letters, that do not belong to the alphabet.");
+                    MessageBox.Show("Not accepted - your word contains illegal characters or letters, that do not belong to the alphabet.");
                     return;
                 }
             }
@@ -97,7 +97,7 @@ namespace Finite
                 }
                 else
                 {
-                    MessageBox.Show("The word " + _word + " is not accepted.");
+                    MessageBox.Show("The word \"" + _word + "\" is not accepted.");
                 }
                 btnNextStep.IsEnabled = false;
                 btnStartSimulation.IsEnabled = true;
@@ -224,11 +224,11 @@ namespace Finite
                 imgGraph.Source = nextBmp;
                 if (_currentState.IsFinal)
                 {
-                    MessageBox.Show("The word " + _word + " is accepted.");
+                    MessageBox.Show("The word \"" + _word + "\" is accepted.");
                 }
                 else
                 {
-                    MessageBox.Show("The word " + _word + " is not accepted.");
+                    MessageBox.Show("The word \"" + _word + "\" is not accepted.");
                 }
                 btnNextStep.IsEnabled = false;
                 btnStartSimulation.IsEnabled = true;

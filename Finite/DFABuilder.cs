@@ -168,7 +168,7 @@ namespace Finite
                     State equivalent = null;
                     if (hasSubstring)
                     {
-                        var testWindow = new MyDialog(state.RegexLabel, Dfa.States);
+                        var testWindow = new UserInteraction(state.RegexLabel, Dfa.States);
                         if (testWindow.ShowDialog() == false)
                         {
                             equivalent = testWindow.GetSelectedState();

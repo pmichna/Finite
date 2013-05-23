@@ -56,8 +56,8 @@
     </ApplicationDefinition>
     <Compile Include="DFA.cs" />
     <Compile Include="DFABuilder.cs" />
-    <Compile Include="MyDialog.xaml.cs">
-      <DependentUpon>MyDialog.xaml</DependentUpon>
+    <Compile Include="UserInteractionWindow.xaml.cs">
+      <DependentUpon>UserInteractionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="OutputWindow.xaml.cs">
       <DependentUpon>OutputWindow.xaml</DependentUpon>
@@ -81,7 +81,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="MyDialog.xaml">
+    <Page Include="UserInteractionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

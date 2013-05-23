@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,16 +18,16 @@ namespace Finite
     /// <summary>
     /// Interaction logic for MyDialog.xaml
     /// </summary>
-    public partial class MyDialog : Window
+    public partial class UserInteraction : Window
     {
         private List<State> _states;
         private State _selectedState;
 
-        public MyDialog(string test, List<State> states)
+        public UserInteraction(string test, List<State> states)
         {
             
             InitializeComponent();
-            lbl.Content = "something equivalent to " + test + "?";
+            lbl.Content = "Something equivalent to " + test + "? (select from the list and click \"OK\")";
             _states = states;
             lstStates.ItemsSource = _states;
         }
